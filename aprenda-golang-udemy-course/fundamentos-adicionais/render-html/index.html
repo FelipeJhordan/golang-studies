@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Renderizando uma página simples</title>
+  </head>
+  <body>
+    <header>
+      <div><h1>Página simples</h1></div>
+      <nav>
+        <ul>
+          <li><a href="#main">principal</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main id="main">
+      <div>
+        <h2>Alguma coisa aleatória</h2>
+      </div>
+      <marquee behavior="" direction="left">Olá {{ .Nome }}</marquee>
+      <h3>{{ .Email }}</h3>
+    </main>
+    <footer>Rodapé</footer>
+  </body>
+</html>
