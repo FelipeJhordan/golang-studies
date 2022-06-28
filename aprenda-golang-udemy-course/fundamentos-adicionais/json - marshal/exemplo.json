@@ -1,0 +1,14 @@
+{
+    "nome": "Felipe Jhordan",
+    "idade": 22,
+    "cursos" : [
+        "typescript",
+        "node",
+        "javascript",
+        "go",
+        "spring",
+        "java",
+        "kotlin",
+        "python"
+    ]
+}
