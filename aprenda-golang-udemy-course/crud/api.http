@@ -12,3 +12,7 @@ Content-Type: application/json
 GET {{baseUrl}}/usuarios
 Content-Type: application/json
 
+###
+GET {{baseUrl}}/usuarios/1
+Content-Type: application/json 
+
