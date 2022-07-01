@@ -16,3 +16,12 @@ Content-Type: application/json
 GET {{baseUrl}}/usuarios/1
 Content-Type: application/json 
 
+### 
+PUT {{baseUrl}}/usuarios/1
+Content-Type: application/json
+
+{
+    "nome": "Joaquim Silveire",
+    "email": "joaquin@teste.com"
+}
+
