@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:5000
-####
+###
 POST {{baseUrl}}/usuarios
 Content-Type: application/json
 
@@ -7,3 +7,8 @@ Content-Type: application/json
     "nome": "Felipe Jhordan1",
     "email": "felipejordan.alves@gmail.com"
 }
+
+###
+GET {{baseUrl}}/usuarios
+Content-Type: application/json
+
