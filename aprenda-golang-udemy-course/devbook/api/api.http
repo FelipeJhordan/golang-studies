@@ -1,0 +1,21 @@
+@baseUrl = http://localhost:5000
+
+###
+GET {{baseUrl}}/usuarios
+Content-Type: application/json
+
+###
+GET {{baseUrl}}/usuarios/1
+Content-Type: application/json
+
+###
+POST {{baseUrl}}/usuarios
+Content-Type: application/json
+
+###
+PUT {{baseUrl}}/usuarios/2
+Content-Type: application/json
+
+###
+DELETE {{baseUrl}}/usuarios/3
+Content-Type: application/json
