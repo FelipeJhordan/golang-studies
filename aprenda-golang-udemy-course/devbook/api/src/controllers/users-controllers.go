@@ -4,31 +4,39 @@ import (
 	db "api/src/bd"
 	"api/src/models"
 	"api/src/repositories"
+	"api/src/responses"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	bodyRequest, erro := ioutil.ReadAll(r.Body)
 	if erro != nil {
-		log.Fatal(erro)
+		responses.Error(w, http.StatusUnprocessableEntity, erro)
 	}
 
 	var user models.User
 	if erro = json.Unmarshal(bodyRequest, &user); erro != nil {
-		log.Fatal(erro)
+		responses.Error(w, http.StatusBadRequest, erro)
 	}
 
 	db, erro := db.Connect()
 	if erro != nil {
-		log.Fatal(erro)
+		responses.Error(w, http.StatusInternalServerError, erro)
 	}
+	defer db.Close()
 
 	repository := repositories.CreateNewUserRepository(db)
-	repository.Create(user)
+	user.ID, erro = repository.Create(user)
+
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+	responses.JSON(w, http.StatusCreated, user)
 }
+
 func ListUsers(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Listar usuários"))
 }
