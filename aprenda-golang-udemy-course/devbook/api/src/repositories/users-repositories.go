@@ -66,3 +66,67 @@ func (repository UsersRepository) ListUsers(nameOrNick string) ([]models.User, e
 	}
 	return users, nil
 }
+
+func (repository UsersRepository) FindUser(userId uint64) (models.User, error) {
+	lines, erro := repository.db.Query(
+		"select id, name, nick, email, createdAt from users where id = ?;", userId,
+	)
+
+	if erro != nil {
+		return models.User{}, erro
+	}
+
+	defer lines.Close()
+
+	var user models.User
+
+	if lines.Next() {
+		if erro = lines.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nick,
+			&user.Email,
+			&user.CreatedAt,
+		); erro != nil {
+			return models.User{}, erro
+		}
+	}
+
+	return user, nil
+}
+
+func (repository UsersRepository) Update(id uint64, user models.User) error {
+	statatment, erro :=
+		repository.db.Prepare(
+			"update users set name = ?, nick = ?, email = ? where id = ? ",
+		)
+
+	if erro != nil {
+		return erro
+	}
+
+	defer statatment.Close()
+
+	if _, erro = statatment.Exec(user.Name, user.Nick, user.Email, id); erro != nil {
+		return erro
+	}
+
+	return nil
+}
+
+func (repository UsersRepository) Deletar(userId uint64) error {
+	statatment, erro := repository.db.Prepare("delete from users where id = ?")
+
+	if erro != nil {
+		return erro
+	}
+
+	defer statatment.Close()
+
+	if _, erro = statatment.Exec(userId); erro != nil {
+		return erro
+	}
+
+	return nil
+
+}

@@ -19,19 +19,19 @@ var routesUsers = []Route{
 		NeedAuthentication: false,
 	},
 	{
-		URI:                "/usuarios/{usuarioId}",
+		URI:                "/usuarios/{userId}",
 		Method:             http.MethodGet,
 		Function:           controllers.FindUser,
 		NeedAuthentication: false,
 	},
 	{
-		URI:                "/usuarios/{usuarioId}",
+		URI:                "/usuarios/{userId}",
 		Method:             http.MethodPut,
 		Function:           controllers.UpdateUser,
 		NeedAuthentication: false,
 	},
 	{
-		URI:                "/usuarios/{usuarioId}",
+		URI:                "/usuarios/{userId}",
 		Method:             http.MethodDelete,
 		Function:           controllers.DeleteUser,
 		NeedAuthentication: false,
