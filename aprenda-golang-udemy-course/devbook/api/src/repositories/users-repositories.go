@@ -3,6 +3,7 @@ package repositories
 import (
 	"api/src/models"
 	"database/sql"
+	"fmt"
 )
 
 type UsersRepository struct {
@@ -33,4 +34,35 @@ func (repository UsersRepository) Create(user models.User) (uint64, error) {
 	}
 
 	return uint64(lastInsertedId), nil
+}
+
+func (repository UsersRepository) ListUsers(nameOrNick string) ([]models.User, error) {
+	nameOrNickLikeStatement := fmt.Sprintf("%%%s%%", nameOrNick)
+
+	lines, erro := repository.db.Query(
+		"select id, name, nick, email, createdAt from users where name like ? or nick like ?",
+		nameOrNickLikeStatement, nameOrNickLikeStatement,
+	)
+
+	if erro != nil {
+		return nil, erro
+	}
+
+	var users []models.User
+
+	for lines.Next() {
+		var user models.User
+
+		if erro = lines.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nick,
+			&user.Email,
+			&user.CreatedAt,
+		); erro != nil {
+			return nil, erro
+		}
+		users = append(users, user)
+	}
+	return users, nil
 }
