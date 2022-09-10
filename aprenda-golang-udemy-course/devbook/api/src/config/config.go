@@ -14,7 +14,7 @@ var (
 	Port                     = 0
 )
 
-func Carregar() {
+func LoadEnvs() {
 	var erro error
 	if erro = godotenv.Load(); erro != nil {
 		log.Fatal(erro)

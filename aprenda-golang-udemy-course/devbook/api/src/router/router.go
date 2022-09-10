@@ -6,8 +6,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Gerar() *mux.Router {
+// Gerar vai retornar um router com as rotas configuradas
+func GenerateRouter() *mux.Router {
 	router := mux.NewRouter()
-
 	return routes.ConfigureRoutes(router)
 }

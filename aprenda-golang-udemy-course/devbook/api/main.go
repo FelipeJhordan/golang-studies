@@ -9,10 +9,9 @@ import (
 )
 
 func main() {
-	config.Carregar()
-	fmt.Println(config.DatabaseConnectionString)
-	fmt.Println("Rodando api")
-	r := router.Gerar()
+	config.LoadEnvs()
 
+	r := router.GenerateRouter()
+	fmt.Printf("Escutando na porta %d", config.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.Port), r))
 }
