@@ -10,13 +10,13 @@ var routesUsers = []Route{
 		URI:                "/usuarios",
 		Method:             http.MethodPost,
 		Function:           controllers.CreateUser,
-		NeedAuthentication: false,
+		NeedAuthentication: true,
 	},
 	{
 		URI:                "/usuarios",
 		Method:             http.MethodGet,
 		Function:           controllers.ListUsers,
-		NeedAuthentication: false,
+		NeedAuthentication: true,
 	},
 	{
 		URI:                "/usuarios/{userId}",
@@ -28,12 +28,12 @@ var routesUsers = []Route{
 		URI:                "/usuarios/{userId}",
 		Method:             http.MethodPut,
 		Function:           controllers.UpdateUser,
-		NeedAuthentication: false,
+		NeedAuthentication: true,
 	},
 	{
 		URI:                "/usuarios/{userId}",
 		Method:             http.MethodDelete,
 		Function:           controllers.DeleteUser,
-		NeedAuthentication: false,
+		NeedAuthentication: true,
 	},
 }
