@@ -10,7 +10,7 @@ var routesUsers = []Route{
 		URI:                "/usuarios",
 		Method:             http.MethodPost,
 		Function:           controllers.CreateUser,
-		NeedAuthentication: true,
+		NeedAuthentication: false,
 	},
 	{
 		URI:                "/usuarios",
@@ -46,6 +46,12 @@ var routesUsers = []Route{
 		URI:                "/usuarios/{userId}/parar-de-seguir",
 		Method:             http.MethodPost,
 		Function:           controllers.UnfollowUser,
+		NeedAuthentication: true,
+	},
+	{
+		URI:                "/usuarios/{userId}/seguidores",
+		Method:             http.MethodGet,
+		Function:           controllers.FindFollowers,
 		NeedAuthentication: true,
 	},
 }
