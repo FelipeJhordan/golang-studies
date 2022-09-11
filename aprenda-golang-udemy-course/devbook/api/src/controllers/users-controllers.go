@@ -298,3 +298,30 @@ func FindFollowers(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, http.StatusOK, followers)
 }
+
+func FindFollowing(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userId, erro := strconv.ParseUint(params["userId"], 10, 64)
+	if erro != nil {
+		responses.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := db.Connect()
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.CreateNewUserRepository(db)
+
+	users, erro := repository.FindFollowing(userId)
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, users)
+}

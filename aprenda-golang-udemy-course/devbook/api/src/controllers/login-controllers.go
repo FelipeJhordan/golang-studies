@@ -8,9 +8,13 @@ import (
 	"api/src/security"
 	"api/src/security/authentication"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -55,4 +59,69 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println(token)
 	w.Write([]byte(token))
+}
+
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	userIdByToken, erro := authentication.ExtractUserId(r)
+	if erro != nil {
+		responses.Error(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	params := mux.Vars(r)
+
+	userId, erro := strconv.ParseUint(params["userId"], 10, 64)
+	if erro != nil {
+		responses.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if userId != userIdByToken {
+		responses.Error(w, http.StatusForbidden, errors.New("Não é possível atualizar um usuario que não seja o seu."))
+		return
+	}
+
+	bodyRequest, erro := ioutil.ReadAll(r.Body)
+
+	var password models.Password
+
+	if erro = json.Unmarshal(bodyRequest, &password); erro != nil {
+		responses.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	connection, erro := db.Connect()
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	defer connection.Close()
+
+	repository := repositories.CreateNewUserRepository(connection)
+
+	savedPassword, erro := repository.FindPassword(userId)
+
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	if erro = security.VerifyPassword(savedPassword, password.Current); erro != nil {
+		responses.Error(w, http.StatusUnauthorized, errors.New("A senha atual não condiz com a senha salva no banco"))
+		return
+	}
+
+	hashedPassword, erro := security.Hash(password.New)
+	if erro != nil {
+		responses.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if erro = repository.UpdatePassword(userId, string(hashedPassword)); erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	responses.JSON(w, http.StatusNoContent, nil)
 }
