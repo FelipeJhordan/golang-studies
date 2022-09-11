@@ -171,5 +171,43 @@ func UpdatePublications(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletPublication(w http.ResponseWriter, r *http.Request) {
+	userIdByToken, erro := authentication.ExtractUserId(r)
+	if erro != nil {
+		responses.Error(w, http.StatusUnauthorized, erro)
+		return
+	}
 
+	params := mux.Vars(r)
+	publicationId, erro := strconv.ParseUint(params["publicationId"], 10, 64)
+	if erro != nil {
+		responses.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := db.Connect()
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.CreateNewPublicationRepository(db)
+	savedPublication, erro := repository.FindById(publicationId)
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	if savedPublication.AuthorID != userIdByToken {
+		responses.Error(w, http.StatusForbidden, errors.New("Não é possível remover uma publicação que não é sua."))
+		return
+	}
+
+	if erro = repository.Delete(publicationId); erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	responses.JSON(w, http.StatusNoContent, nil)
 }
