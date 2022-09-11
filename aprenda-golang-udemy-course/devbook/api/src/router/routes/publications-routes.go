@@ -42,4 +42,10 @@ var routesPublications = []Route{
 		Function:           controllers.LikePublication,
 		NeedAuthentication: true,
 	},
+	{
+		URI:                "/publicacoes/{publicationId}/descurtir",
+		Method:             http.MethodPost,
+		Function:           controllers.UnlikePublication,
+		NeedAuthentication: true,
+	},
 }

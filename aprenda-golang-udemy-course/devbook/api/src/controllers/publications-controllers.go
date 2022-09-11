@@ -263,3 +263,28 @@ func LikePublication(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, http.StatusNoContent, nil)
 }
+
+func UnlikePublication(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	publicationId, erro := strconv.ParseUint(params["publicationId"], 10, 64)
+	if erro != nil {
+		responses.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := db.Connect()
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.CreateNewPublicationRepository(db)
+	if erro = repository.UnlikePublication(publicationId); erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	responses.JSON(w, http.StatusNoContent, nil)
+}
