@@ -6,6 +6,7 @@ import (
 	"api/src/repositories"
 	"api/src/responses"
 	"api/src/security"
+	"api/src/security/authentication"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -47,6 +48,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte("Você está logado! Parabéns"))
-	fmt.Println(savedUserDB)
+	token, erro := authentication.CreateToken(savedUserDB.ID)
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+	fmt.Println(token)
+	w.Write([]byte(token))
 }
