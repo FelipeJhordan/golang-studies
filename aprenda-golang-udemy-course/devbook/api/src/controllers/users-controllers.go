@@ -235,3 +235,39 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, http.StatusNoContent, nil)
 }
+
+func UnfollowUser(w http.ResponseWriter, r *http.Request) {
+	followerId, erro := authentication.ExtractUserId(r)
+	if erro != nil {
+		responses.Error(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	params := mux.Vars(r)
+	userTargetId, erro := strconv.ParseUint(params["userId"], 10, 64)
+	if erro != nil {
+		responses.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if followerId == userTargetId {
+		responses.Error(w, http.StatusForbidden, errors.New("Não é possível parar de seguir você mesmo"))
+		return
+	}
+
+	db, erro := db.Connect()
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.CreateNewUserRepository(db)
+	if erro = repository.UnfollowUser(userTargetId, followerId); erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	responses.JSON(w, http.StatusNoContent, nil)
+}

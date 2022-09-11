@@ -42,4 +42,10 @@ var routesUsers = []Route{
 		Function:           controllers.FollowUser,
 		NeedAuthentication: true,
 	},
+	{
+		URI:                "/usuarios/{userId}/parar-de-seguir",
+		Method:             http.MethodPost,
+		Function:           controllers.UnfollowUser,
+		NeedAuthentication: true,
+	},
 }
