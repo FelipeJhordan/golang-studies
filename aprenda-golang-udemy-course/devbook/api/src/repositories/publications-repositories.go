@@ -68,3 +68,38 @@ func (repository PublicationRepository) FindById(publicationId uint64) (models.P
 
 	return publication, nil
 }
+
+func (repository PublicationRepository) Find(userId uint64) ([]models.Publication, error) {
+	lines, erro := repository.db.Query(`
+		select distinct p.*, u.nick from publications p
+		inner join users u on u.id = p.authorId
+		inner join followers f on p.authorId = f.userId
+		where u.id = ? or f.followerID = ?
+		order by 1 desc
+	`, userId, userId)
+	if erro != nil {
+		return nil, erro
+	}
+	defer lines.Close()
+
+	var publications []models.Publication
+
+	for lines.Next() {
+		var publication models.Publication
+		if erro = lines.Scan(
+			&publication.ID,
+			&publication.Title,
+			&publication.Content,
+			&publication.AuthorID,
+			&publication.Likes,
+			&publication.CreatedAt,
+			&publication.AuthorNick,
+		); erro != nil {
+			return nil, erro
+		}
+
+		publications = append(publications, publication)
+	}
+
+	return publications, nil
+}

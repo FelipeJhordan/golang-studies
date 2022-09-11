@@ -59,6 +59,28 @@ func CreatePublication(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusCreated, publication)
 }
 func FindPublications(w http.ResponseWriter, r *http.Request) {
+	userIdByToken, erro := authentication.ExtractUserId(r)
+	if erro != nil {
+		responses.Error(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	connection, erro := db.Connect()
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	defer connection.Close()
+
+	repository := repositories.CreateNewPublicationRepository(connection)
+	publications, erro := repository.Find(userIdByToken)
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, publications)
 
 }
 func FindPublication(w http.ResponseWriter, r *http.Request) {
