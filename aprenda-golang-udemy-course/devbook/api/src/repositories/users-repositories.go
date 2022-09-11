@@ -15,22 +15,21 @@ func CreateNewUserRepository(db *sql.DB) *UsersRepository {
 }
 
 func (repository UsersRepository) Create(user models.User) (uint64, error) {
-	statement, error := repository.db.Prepare("insert into users (name, nick, email, password) values(?, ?, ?, ?)")
-
-	if error != nil {
-		return 0, error
+	statement, erro := repository.db.Prepare("insert into users (name, nick, email, password) values(?, ?, ?, ?)")
+	if erro != nil {
+		return 0, erro
 	}
 
 	defer statement.Close()
 
-	result, error := statement.Exec(user.Name, user.Nick, user.Email, user.Password)
-	if error != nil {
-		return 0, nil
+	result, erro := statement.Exec(user.Name, user.Nick, user.Email, user.Password)
+	if erro != nil {
+		return 0, erro
 	}
 
-	lastInsertedId, error := result.LastInsertId()
-	if error != nil {
-		return 0, error
+	lastInsertedId, erro := result.LastInsertId()
+	if erro != nil {
+		return 0, erro
 	}
 
 	return uint64(lastInsertedId), nil
@@ -129,4 +128,22 @@ func (repository UsersRepository) Deletar(userId uint64) error {
 
 	return nil
 
+}
+
+func (repository UsersRepository) FindByEmail(email string) (models.User, error) {
+	line, erro := repository.db.Query("select id, password from users where email = ?", email)
+	if erro != nil {
+		return models.User{}, erro
+	}
+
+	defer line.Close()
+
+	var user models.User
+	if line.Next() {
+		if erro = line.Scan(&user.ID, &user.Password); erro != nil {
+			return models.User{}, nil
+		}
+	}
+
+	return user, nil
 }
