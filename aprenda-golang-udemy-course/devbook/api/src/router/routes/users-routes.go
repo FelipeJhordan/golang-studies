@@ -66,4 +66,10 @@ var routesUsers = []Route{
 		Function:           controllers.UpdatePassword,
 		NeedAuthentication: true,
 	},
+	{
+		URI:                "/usuarios/{userId}/publicacoes",
+		Method:             http.MethodGet,
+		Function:           controllers.FindPublicationsByUser,
+		NeedAuthentication: true,
+	},
 }

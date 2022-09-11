@@ -136,3 +136,56 @@ func (repository PublicationRepository) Delete(publicationId uint64) error {
 
 	return nil
 }
+
+func (repository PublicationRepository) FindPublicationsByUser(userId uint64) ([]models.Publication, error) {
+	lines, erro := repository.db.Query(
+		`
+			select p.*, u.nick from publications p 
+			join users u on u.id = p.authorId
+			where p.authorId = ?
+		`, userId,
+	)
+
+	if erro != nil {
+		return nil, erro
+	}
+
+	defer lines.Close()
+
+	var publications []models.Publication
+
+	for lines.Next() {
+		var publication models.Publication
+		if erro = lines.Scan(
+			&publication.ID,
+			&publication.Title,
+			&publication.Content,
+			&publication.AuthorID,
+			&publication.Likes,
+			&publication.CreatedAt,
+			&publication.AuthorNick,
+		); erro != nil {
+			return nil, erro
+		}
+
+		publications = append(publications, publication)
+	}
+
+	return publications, nil
+}
+
+func (repository PublicationRepository) LikePublication(publicationId uint64) error {
+	statement, erro := repository.db.Prepare(` update publications set likes = likes + 1 where id = ?`)
+
+	if erro != nil {
+		return erro
+	}
+
+	defer statement.Close()
+
+	if _, erro = statement.Exec(publicationId); erro != nil {
+		return erro
+	}
+
+	return nil
+}

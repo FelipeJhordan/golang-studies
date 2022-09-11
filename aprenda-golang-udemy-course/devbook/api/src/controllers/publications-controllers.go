@@ -211,3 +211,55 @@ func DeletPublication(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, http.StatusNoContent, nil)
 }
+
+func FindPublicationsByUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userId, erro := strconv.ParseUint(params["userId"], 10, 64)
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	db, erro := db.Connect()
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.CreateNewPublicationRepository(db)
+	publications, erro := repository.FindPublicationsByUser(userId)
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, publications)
+
+}
+
+func LikePublication(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	publicationId, erro := strconv.ParseUint(params["publicationId"], 10, 64)
+	if erro != nil {
+		responses.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := db.Connect()
+	if erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	defer db.Close()
+
+	repository := repositories.CreateNewPublicationRepository(db)
+	if erro = repository.LikePublication(publicationId); erro != nil {
+		responses.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	responses.JSON(w, http.StatusNoContent, nil)
+}
