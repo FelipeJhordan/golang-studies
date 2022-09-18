@@ -1,4 +1,6 @@
-# Aprenda Golang do zero e desenvolva uma aplicação completa
+# Curso em go
+
+## Curso feito pela udemy, para aprender sobre a linguagem Go.
 
 ## Sobre GO
 
