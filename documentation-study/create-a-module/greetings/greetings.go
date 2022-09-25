@@ -7,6 +7,20 @@ import (
 	"time"
 )
 
+func Hellos(names []string) (map[string]string, error) {
+	messages := make(map[string]string) // Aloca memória para uma determinada estrutura de dados
+	for _, name := range names {        // ignora o parametro de index
+		message, err := Hello(name)
+		if err != nil {
+			return nil, err
+		}
+
+		messages[name] = message
+	}
+
+	return messages, nil
+}
+
 func Hello(name string) (string, error) {
 	const EMPTY_STRING = ""
 	if name == EMPTY_STRING {
@@ -21,20 +35,6 @@ func Hello(name string) (string, error) {
 	returnedMessage := message + message2
 
 	return returnedMessage, nil
-}
-
-func Hellos(names []string) (map[string]string, error) {
-	messages := make(map[string]string) // Aloca memória para uma determinada estrutura de dados
-	for _, name := range names {        // ignora o parametro de index
-		message, err := Hello(name)
-		if err != nil {
-			return nil, err
-		}
-
-		messages[name] = message
-	}
-
-	return messages, nil
 }
 
 func init() {
