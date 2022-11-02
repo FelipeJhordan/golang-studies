@@ -1,9 +1,9 @@
-package formas
+package shapes
 
 import "testing"
 
-func TestPerimetro(t *testing.T) {
-	result := Perimetro(10.0, 10.0)
+func TestPerimeter(t *testing.T) {
+	result := Perimeter(10.0, 10.0)
 	expect := 40.0
 
 	if result != expect {
