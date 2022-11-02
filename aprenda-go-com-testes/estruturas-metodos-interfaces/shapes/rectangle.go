@@ -1,12 +1,14 @@
 package shapes
 
+import "math"
+
 type Rectangle struct {
 	width  float64
 	height float64
 }
 
 func (r Rectangle) Area() float64 {
-	return 0
+	return r.width * r.height
 }
 
 type Circle struct {
@@ -14,7 +16,7 @@ type Circle struct {
 }
 
 func (c Circle) Area() float64 {
-	return 0
+	return math.Pi * c.radius * c.radius
 }
 
 func Perimeter(rectangle Rectangle) float64 {
