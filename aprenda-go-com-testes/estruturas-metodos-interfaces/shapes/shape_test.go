@@ -13,30 +13,25 @@ func TestPerimeter(t *testing.T) {
 }
 
 func TestArea(t *testing.T) {
-	verifyArea := func(t *testing.T, shape Shape, expect float64) {
-		t.Helper()
-		result := shape.Area()
-
-		if result != expect {
-			t.Errorf("esperado %.2f, esperado %.2f", result, expect)
-		}
+	testsArea := []struct {
+		shape  Shape
+		expect float64
+	}{
+		{
+			Rectangle{12, 6}, 72.00,
+		},
+		{
+			Circle{
+				10,
+			}, 314.1592653589793,
+		},
 	}
 
-	t.Run("retangulos", func(t *testing.T) {
-		rectangle := Rectangle{12.0, 6.0}
+	for _, tt := range testsArea {
+		result := tt.shape.Area()
 
-		expect := 72.00
-
-		verifyArea(t, rectangle, expect)
-
-	})
-
-	t.Run("círculos", func(t *testing.T) {
-		circle := Circle{10}
-
-		expect := 314.1592653589793
-
-		verifyArea(t, circle, expect)
-
-	})
+		if result != tt.expect {
+			t.Errorf("resultado %.2f, esperado %.2f", result, tt.expect)
+		}
+	}
 }
