@@ -1,0 +1,12 @@
+Procurar links e seus usuários 
+
+query {
+  links {
+    title
+    address
+    user {
+      	name
+		}
+  }
+}
+
