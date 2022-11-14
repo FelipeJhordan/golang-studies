@@ -10,3 +10,13 @@ query {
   }
 }
 
+Criar um links
+
+mutation create{
+  createLink(input: {title: "something", address: "somewhere"}){
+    title,
+    address,
+    id,
+  }
+}
+
